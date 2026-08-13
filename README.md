@@ -164,7 +164,9 @@ La barra depende de la salida real de `yt-dlp` que recibe el backend. El fronten
 
 ### Spotify no descarga
 
-Spotify necesita credenciales en el backend: `SPOTIFY_CLIENT_ID` y `SPOTIFY_CLIENT_SECRET`. Si faltan, el backend devuelve un error claro en la fila del item.
+Spotify necesita credenciales configuradas en el backend: `SPOTIFY_CLIENT_ID` y `SPOTIFY_CLIENT_SECRET`. Esas claves salen de una app creada en `https://developer.spotify.com/dashboard` y nunca deben ponerse en el frontend ni subirse a GitHub.
+
+El README del backend explica el paso a paso para crear la app de Spotify, copiar `Client ID` / `Client Secret` y configurar las variables de entorno. Si faltan, el backend devuelve un error claro en la fila del item.
 
 ### Error 403 o 429
 
