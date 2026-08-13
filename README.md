@@ -1,6 +1,6 @@
-# Convertidor YouTube MP3 - Frontend
+# Convertidor YouTube/Spotify MP3 - Frontend
 
-Frontend de la aplicacion para convertir videos y playlists de YouTube a MP3 por lote. Esta app permite pegar uno o varios links, enviarlos al backend, ver progreso de descarga y recibir un ZIP final con los MP3 generados.
+Frontend de la aplicacion para convertir videos y playlists de YouTube a MP3 por lote. Tambien acepta links publicos de Spotify como fuente de metadata: el backend lee track, album o playlist de Spotify y luego busca cada cancion en YouTube para descargarla con yt-dlp.
 
 ## Repositorios
 
@@ -21,6 +21,7 @@ Este repositorio contiene solo el frontend. Para que funcione completo necesita 
 
 - Agregar links de videos individuales.
 - Agregar links de playlists completas de YouTube.
+- Agregar links publicos de tracks, albums y playlists de Spotify.
 - Validar formato del link antes de mandarlo a descarga.
 - Consultar progreso del backend mientras descarga.
 - Mostrar conteo de canciones descargadas y esperadas cuando el backend lo reporta.
@@ -37,7 +38,7 @@ Si ves warnings `EBADENGINE` al instalar, actualiza Node a una version compatibl
 
 ## Configuracion
 
-Crea o ajusta el archivo `.env` en la raiz del frontend:
+Copia `.env.example` o crea el archivo `.env` en la raiz del frontend:
 
 ```env
 VITE_API_URL=http://localhost:5000
@@ -104,16 +105,20 @@ Flujo principal:
 
 Las consultas repetidas que ves en DevTools durante una descarga son polling local hacia el backend, no llamadas directas a YouTube.
 
-## Playlists
+## Links soportados
 
 Puedes pegar links como:
 
 ```txt
-https://www.youtube.com/playlist?list=...
+https://www.youtube.com/watch?v=VIDEO_ID
+https://www.youtube.com/playlist?list=PLAYLIST_ID
 https://www.youtube.com/watch?v=VIDEO_ID&list=PLAYLIST_ID
+https://open.spotify.com/track/TRACK_ID
+https://open.spotify.com/album/ALBUM_ID
+https://open.spotify.com/playlist/PLAYLIST_ID
 ```
 
-El frontend envia el link completo al backend. El backend decide si debe usar `--yes-playlist` y descargar toda la playlist.
+El frontend envia el link completo al backend. Para YouTube el backend descarga directo. Para Spotify el backend usa Spotify solo como metadata, revisa varios candidatos de YouTube por cancion y prefiere lyric/official audio con duracion parecida.
 
 ## Estados de descarga
 
@@ -157,12 +162,17 @@ Si el job queda en `error`, el backend no genero MP3 validos para comprimir.
 
 La barra depende de la salida real de `yt-dlp` que recibe el backend. El frontend consulta el progreso cada 1.5 segundos para evitar ruido innecesario.
 
+### Spotify no descarga
+
+Spotify necesita credenciales en el backend: `SPOTIFY_CLIENT_ID` y `SPOTIFY_CLIENT_SECRET`. Si faltan, el backend devuelve un error claro en la fila del item.
+
 ### Error 403 o 429
 
-Estos errores vienen normalmente de YouTube o de `yt-dlp`:
+Estos errores vienen normalmente de YouTube, Spotify o `yt-dlp`:
 
 - `403`: acceso denegado, bloqueo temporal, region, cliente rechazado o contenido que requiere sesion.
 - `429`: demasiadas solicitudes o rate limit.
+- `Sin match en YouTube`: el backend leyo la metadata de Spotify, pero no encontro una version limpia aceptable en YouTube. Puede pasar si solo aparecen karaoke, covers, remixes, lives o versiones raras.
 
 El backend esta configurado en modo conservador para reducir estos casos, pero no se pueden eliminar al 100% porque dependen de YouTube.
 
@@ -192,4 +202,4 @@ Antes de subir, confirma que `.env` no contenga secretos. Para este proyecto sol
 
 ## Nota de uso
 
-Usa la herramienta solo con contenido que tengas permiso de descargar o convertir. El proyecto depende de `yt-dlp`, `ffmpeg` y la disponibilidad de YouTube.
+Usa la herramienta solo con contenido que tengas permiso de descargar o convertir. Spotify se usa solo como metadata, no como fuente directa de audio. El proyecto depende de `yt-dlp`, `ffmpeg`, Spotify Web API y la disponibilidad de YouTube.

@@ -58,14 +58,14 @@ function App() {
     setInputError("");
 
     if (!isValidUrl(cleanUrl)) {
-      setInputError("Ingresa un link válido.");
+      setInputError("Ingresa un link valido.");
       return;
     }
 
     const alreadyExists = items.some((item) => item.url === cleanUrl);
 
     if (alreadyExists) {
-      setInputError("Ese link ya está en la tabla.");
+      setInputError("Ese link ya esta en la tabla.");
       setUrlInput("");
       return;
     }
@@ -94,7 +94,7 @@ function App() {
               ? {
                   ...item,
                   status: "error",
-                  error: result.error ?? "No se encontró el contenido.",
+                  error: result.error ?? "No se encontro el contenido.",
                 }
               : item
           )
@@ -211,7 +211,7 @@ function App() {
       await pollJobStatus(data.jobId);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Ocurrió un error inesperado.";
+        error instanceof Error ? error.message : "Ocurrio un error inesperado.";
 
       setItems((current) =>
         current.map((item) =>
@@ -315,7 +315,7 @@ function App() {
 
           if (data.status === "error") {
             stopPolling();
-            reject(new Error("El proceso terminó con errores."));
+            reject(new Error("El proceso termino con errores."));
             return;
           }
 
@@ -333,16 +333,16 @@ function App() {
   return (
     <main className="page">
       <section className="hero">
-        <p className="eyebrow">Video o playlist a MP3</p>
-        <h1>Descargar videos y playlists por lote</h1>
+        <p className="eyebrow">YouTube o Spotify a MP3</p>
+        <h1>Descargar videos, playlists y links de Spotify</h1>
         <p className="description">
-          Pega un link de video o playlist, presiona Enter y se validará antes de agregarlo a la
+          Pega un link de YouTube o Spotify, presiona Enter y se validara antes de agregarlo a la
           tabla.
         </p>
       </section>
 
       <section className="card inputCard">
-        <label htmlFor="urlInput">Link del video, canción o playlist</label>
+        <label htmlFor="urlInput">Link de video, cancion, playlist o album</label>
 
         <div className="inputRow">
           <input
@@ -371,7 +371,7 @@ function App() {
 
         {inputError && <p className="inputError">{inputError}</p>}
 
-        <p className="hint">Puedes pegar videos individuales o playlists completas.</p>
+        <p className="hint">Puedes pegar videos/playlists de YouTube o tracks/albums/playlists de Spotify.</p>
       </section>
 
       <section className="card">
@@ -403,7 +403,7 @@ function App() {
         </div>
 
         {items.length === 0 ? (
-          <p className="empty">Todavía no agregaste links.</p>
+          <p className="empty">Todavia no agregaste links.</p>
         ) : (
           <div className="tableWrapper">
             <table>
@@ -493,7 +493,7 @@ function DownloadDetail({ item }: { item: DownloadItem }) {
 
       {hasFailedTracks && (
         <details className="trackFailures">
-          <summary>{item.failedTracks.length} canción(es) sin descargar</summary>
+          <summary>{item.failedTracks.length} cancion(es) sin descargar</summary>
           <ol>
             {item.failedTracks.map((track) => (
               <li key={`${track.index}-${track.videoId ?? track.title}`}>
